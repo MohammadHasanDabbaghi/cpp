@@ -1,0 +1,113 @@
+////////////////////////////////////////||//////////////////////////////////////////////||
+// projectOfTATOL: DFA(حجّت عظیمی اسراری)||   ||\\        //||   ||     ||   ||\\\\\     ||
+// version: 1.0.0                       ||   || \\      // ||   ||_____||   ||    \\    ||
+// developer: Mohammad Hasan Dabbaghi   ||   ||  \\    //  ||   ||_____||   ||     ||   ||
+// date: 1396.01.19 OR 2017.04.08       ||   ||   \\  //   ||   ||     ||   ||    //    ||
+// M.H.D                                ||   ||    \\//    ||   ||     ||   ||/////     ||
+//cprogramto.com/c-program-for-dfa      ||                                              ||
+////////////////////////////////////////||//////////////////////////////////////////////||
+//library
+#include<iostream>
+#include<string>
+//declare features of library
+using namespace std;
+//global variable
+int ninputs;
+int check(char, int); //function declaration
+int **dfa;
+char * c;
+//main function
+int main(){
+    //local variable
+    int nstates, nfinals;
+    char a;
+    int s , final_a , v;
+    string string_a;
+    //input: number of states and number of alphabet
+    cout << "Enter the number of states that your DFA consist of:\t";
+    cin >> nstates;
+    cout <<"Enter the number of input symbol that DFA have:\t\t";
+    cin >> ninputs;
+    //get memory
+    c = new char [nstates];
+    dfa = new int *[ninputs];
+    for(int i = 0; i < ninputs; ++i){
+        dfa[i] = new int[nstates];
+    }
+    //input: alphabet
+    cout << "\nEnter input symbols:" << endl;
+    for(int i = 0 ;i < ninputs ;i++){
+        cout << "\n" << i+1 << " input\t";
+        cin >> c[i];
+    }
+    //input: number final states
+    cout << "\nEnter number of final states:\t";
+    cin >> nfinals;
+    if(nfinals > nstates){
+        cout << "EROR" << endl;
+        return 1;
+    }
+    //get memory
+    int *f = new int [nfinals];
+    //input: final states
+    for(int i = 0 ;i < nfinals ;i++){
+        cout << "\nFinal state " << i+1 << " : q";
+        cin >> f[i];
+    }
+    //input: function
+    cout << "-----------------------------------------------------------------------"
+        << "\n\ndefine transition rule as (initial state, input symbol ) = final state\n";
+
+    for(int i = 0 ;i < ninputs ;i++){
+        for(int j=0 ;j < nstates ;j++){
+            cout << "\n(q" << j  << " , " << c[i] << ") = q";
+            cin >> dfa[i][j];
+        }
+    }
+    //calculate: check string
+    do{
+        //first value
+        final_a = 0;
+        v = 0;
+        s = 0;
+        //input: string
+        cout << "\nEnter Input String.. ";
+        cin >> string_a;
+        //check string
+        while(string_a[v]!='\0'){
+            if((s = check(string_a[v++] , s)) < 0){
+                break;
+            }
+        }
+        for(int i = 0 ;i < nfinals ;i++){
+            if(s == f[i]){
+                final_a = 1;
+            }
+        }
+        //output
+        if(final_a == 1){
+            cout << endl << "valid string" << endl << endl;
+        }else{
+            cout << endl << "invalid string" << endl << endl;
+        }
+        //input: yes or no for new string
+        cout << "Do you want to continue?(y/n) ";
+        cin >> a;
+    }while(a == 'y');
+    //freed memory
+    for(int i = 0; i < ninputs; i++){
+            delete []dfa[i];
+    }
+    delete []dfa;
+    delete []c;
+
+    return 0;
+}
+//function of check string
+int check(char b, int d){
+    for(int j = 0 ;j < ninputs ;j++){
+        if(b == c[j])
+            return(dfa[j][d]);
+    }
+    return -1;
+}
